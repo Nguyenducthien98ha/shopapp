@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shopapp/constants.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:shopapp/size_config.dart';
+
+import 'discount_banner.dart';
+import 'home_header.dart';
 
 class Body extends StatelessWidget {
   const Body({Key key}) : super(key: key);
@@ -13,36 +15,11 @@ class Body extends StatelessWidget {
         child: Column(
           children: [
             SizedBox(height: getProportionateScreenWidth(20),),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: getProportionateScreenHeight(20)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                      width: SizeConfig.screenWidth*0.6,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: kSecondaryColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: TextField(
-                        onChanged: (value){},
-                        decoration: InputDecoration(
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          hintText: "Search Product",
-                          prefixIcon: Icon(Icons.search),
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: getProportionateScreenWidth(20),
-                            vertical: getProportionateScreenWidth(9),
-                          )
-                        ),
-                      ),
-                  ),
-                  IconBtnWithCounter(),
-                ],
-              ),
-            )
+            HomeHeader(),
+            SizedBox(height: getProportionateScreenWidth(30),),
+            DiscountBanner(),
+            SizedBox(height: getProportionateScreenWidth(30),),
+            Categories(),
           ],
         ),
       ),
@@ -50,53 +27,65 @@ class Body extends StatelessWidget {
   }
 }
 
-class IconBtnWithCounter extends StatelessWidget {
-  const IconBtnWithCounter({
-    Key key, this.svgSrc, this.numOfItems, this.press,
-  }) : super(key: key);
+class Categories extends StatelessWidget {
+  const Categories({Key key}) : super(key: key);
 
-final String svgSrc;
-final int numOfItems;
-final GestureTapCallback press;
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: (){},
-      borderRadius: BorderRadius.circular(50),
-      child: Stack(
-      overflow: Overflow.visible,
-        children: [
-          Container(
-            padding: EdgeInsets.all(getProportionateScreenWidth(12)),
-            height: getProportionateScreenWidth(46),
-            width: getProportionateScreenWidth(46),
-            decoration: BoxDecoration(
-              color: kSecondaryColor.withOpacity(0.1),
-              shape: BoxShape.circle,
+    List<Map<String, dynamic>> categories = [
+      {"icon": "assets/icons/Flash Icon.svg", "text": "Flash Deal"},
+      {"icon": "assets/icons/Bill Icon.svg", "text": "Bill"},
+      {"icon": "assets/icons/Game Icon.svg", "text": "Game"},
+      {"icon": "assets/icons/Gift Icon.svg", "text": "Daily Gift"},
+      {"icon": "assets/icons/Discover.svg", "text": "More"},
+    ];
+    return Row(
+      children: [
+        ...List.generate(categories.length, (index) => CategoryCard(
+          icon: categories[index]["icon"],
+          text: categories[index]["text"],
+          press: (){},
+        ))
+      ],
+    );
+  }
+}
+
+class CategoryCard extends StatelessWidget {
+  const CategoryCard({
+    Key key,
+    @required this.icon,
+    @required this.text,
+    @required this.press,
+  }) : super(key: key);
+
+  final String icon, text;
+  final GestureTapCallback press;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: press,
+          child: SizedBox(
+        width: getProportionateScreenWidth(55),
+        child: Column(
+          children: [
+            AspectRatio(
+              aspectRatio: 1,
+              child: Container(
+                padding: EdgeInsets.all(getProportionateScreenWidth(15)),
+                decoration: BoxDecoration(
+                  color: Color(0xFFFFECDF),
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: SvgPicture.asset(icon),
+              ),
             ),
-            child: SvgPicture.asset("assets/icons/Bell.svg"),
-          ),
-          Positioned(
-            right: 0,
-            top: -3,
-            child: Container(height: getProportionateScreenWidth(16),
-            width: getProportionateScreenWidth(16),
-            decoration: BoxDecoration(
-              color: Color(0xFFFF4848),
-              shape: BoxShape.circle,
-              border: Border.all(width: 1.5, color: Colors.white)
-            ),
-            child: Center(
-              child: Text("3",style: TextStyle(
-                fontSize: getProportionateScreenWidth(10),
-                height: 1,
-                color: Colors.white,
-                fontWeight: FontWeight.w600
-              ),),
-            ),
-            ),
-          ),
-        ],
+            const SizedBox(height: 5),
+            Text(text,
+            textAlign: TextAlign.center,),
+          ],
+        ),
       ),
     );
   }
