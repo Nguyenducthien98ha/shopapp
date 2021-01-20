@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shopapp/components/default_button.dart';
+import 'package:shopapp/screens/home/home_screen.dart';
 
 import '../../../constants.dart';
 import '../../../size_config.dart';
@@ -106,7 +107,7 @@ void nextField({String value,FocusNode focusNode}){
           SizedBox(height: SizeConfig.screenHeight*0.15),
           DefaultButton(
             text: "Continue",
-            press: (){},
+            press: ()=> Navigator.pushNamed(context, HomeScreen.routeName),
           )
         ],
       ),
